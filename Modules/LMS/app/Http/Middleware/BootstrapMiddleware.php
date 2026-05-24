@@ -29,6 +29,14 @@ class BootstrapMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        try {
+            if (!checkDatabaseConnection() || !\Illuminate\Support\Facades\Schema::hasTable('languages')) {
+                return $next($request);
+            }
+        } catch (\Throwable $e) {
+            return $next($request);
+        }
+
         $defaultLanguage = Language::select('code')->where('active', 1)->first();
         $locale = session()->get('locale') ?? ($defaultLanguage ? $defaultLanguage['code'] : null) ?? App::getLocale();
         $guard = null;

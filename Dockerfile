@@ -69,7 +69,7 @@ COPY . .
 # Copy compiled frontend assets from Stage 1
 COPY --from=frontend-builder /app/public/lms/assets/css/output.min.css ./public/lms/assets/css/output.min.css
 COPY --from=frontend-builder /app/public/lms/frontend/assets/css/output.min.css ./public/lms/frontend/assets/css/output.min.css
-COPY --from=frontend-builder /app/public/build/ ./public/build/
+# COPY --from=frontend-builder /app/public/build/ ./public/build/
 
 # Install composer packages (optimized for production)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-plugins --no-scripts

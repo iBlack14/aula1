@@ -577,7 +577,12 @@ if (! function_exists('get_options')) {
     {
 
         return Cache::rememberForever($key, function () {
-            return ThemeSetting::all()->keyBy('key');
+            try {
+                if (checkDatabaseConnection() && \Illuminate\Support\Facades\Schema::hasTable('theme_settings')) {
+                    return ThemeSetting::all()->keyBy('key');
+                }
+            } catch (\Throwable $e) {}
+            return collect();
         });
     }
 }

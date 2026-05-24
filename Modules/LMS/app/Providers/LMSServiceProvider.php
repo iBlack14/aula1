@@ -315,14 +315,18 @@ class LMSServiceProvider extends ServiceProvider
 
     protected function paystackConfigure()
     {
-        $paymentMethod =  PaymentMethod::where('method_name', 'paystack')->first();
-        if ($paymentMethod) {
-            $secretKey = $paymentMethod->keys['secret_key'] ?? '';
-            $publicKey = $paymentMethod->keys['public_key'] ?? '';
-            $merchantEmail = $paymentMethod->keys['merchant_email'] ?? '';
-            config()->set('paystack.secretKey',  $secretKey);
-            config()->set('paystack.publicKey', $publicKey);
-            config()->set('paystack.merchantEmail', $merchantEmail);
-        }
+        try {
+            if (checkDatabaseConnection() && \Illuminate\Support\Facades\Schema::hasTable('payment_methods')) {
+                $paymentMethod =  PaymentMethod::where('method_name', 'paystack')->first();
+                if ($paymentMethod) {
+                    $secretKey = $paymentMethod->keys['secret_key'] ?? '';
+                    $publicKey = $paymentMethod->keys['public_key'] ?? '';
+                    $merchantEmail = $paymentMethod->keys['merchant_email'] ?? '';
+                    config()->set('paystack.secretKey',  $secretKey);
+                    config()->set('paystack.publicKey', $publicKey);
+                    config()->set('paystack.merchantEmail', $merchantEmail);
+                }
+            }
+        } catch (\Throwable $e) {}
     }
 }

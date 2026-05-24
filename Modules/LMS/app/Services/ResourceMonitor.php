@@ -16,7 +16,11 @@ class ResourceMonitor
 
     public function __construct(PerformanceMetric $metric)
     {
-        $this->metric = $metric->first();
+        try {
+            $this->metric = $metric->first();
+        } catch (\Throwable $e) {
+            $this->metric = null;
+        }
     }
 
     public function analyzeResource($identifier, $hash)

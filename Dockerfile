@@ -45,7 +45,8 @@ RUN apk add --no-cache \
     libzip-dev \
     oniguruma-dev \
     libxml2-dev \
-    postgresql-dev
+    postgresql-dev \
+    icu-dev
 
 # Configure and install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -58,7 +59,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         bcmath \
         gd \
         zip \
-        opcache
+        opcache \
+        intl
 
 # Install Composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

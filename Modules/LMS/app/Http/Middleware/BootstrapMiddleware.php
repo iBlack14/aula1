@@ -30,7 +30,7 @@ class BootstrapMiddleware
     public function handle(Request $request, Closure $next)
     {
         $defaultLanguage = Language::select('code')->where('active', 1)->first();
-        $locale = session()->get('locale') ?? $defaultLanguage['code'] ?? App::getLocale();
+        $locale = session()->get('locale') ?? ($defaultLanguage ? $defaultLanguage['code'] : null) ?? App::getLocale();
         $guard = null;
 
         if (Auth::check()) {
@@ -66,7 +66,7 @@ class BootstrapMiddleware
 
             if ($localization) {
                 $language = $localization->language;
-                $locale = $defaultLanguage['code'] ?? $language->code ?? $locale;
+                $locale = ($defaultLanguage ? $defaultLanguage['code'] : null) ?? $language->code ?? $locale;
             }
         }
 
@@ -97,7 +97,7 @@ class BootstrapMiddleware
         });
 
         app()->singleton('default_language', function () use ($defaultLanguage, $locale) {
-            return $defaultLanguage['code'] ?? $locale;
+            return ($defaultLanguage ? $defaultLanguage['code'] : null) ?? $locale;
         });
 
         app()->singleton('user', function () use ($guard) {

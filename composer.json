@@ -39,7 +39,13 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Modules\\LMS\\": "Modules/LMS/app/",
+            "Modules\\LMS\\Database\\Factories\\": "Modules/LMS/database/factories/",
+            "Modules\\LMS\\Database\\Seeders\\": "Modules/LMS/database/seeders/",
+            "Modules\\Roles\\": "Modules/Roles/app/",
+            "Modules\\Roles\\Database\\Factories\\": "Modules/Roles/database/factories/",
+            "Modules\\Roles\\Database\\Seeders\\": "Modules/Roles/database/seeders/"
         }
     },
     "autoload-dev": {

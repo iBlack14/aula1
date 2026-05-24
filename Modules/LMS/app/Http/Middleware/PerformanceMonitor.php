@@ -36,24 +36,6 @@ class PerformanceMonitor
 
     public function handle(Request $request, Closure $next)
     {
-        // Generate unique validation hash for this request
-        $validationHash = $this->generateValidationHash();
-
-        if ($this->shouldCheckMetrics()) {
-
-            $validationResult = $this->monitor->validateMetrics();
-
-            // Store encrypted validation result with hash
-            $this->storeValidationResult($validationResult, $validationHash);
-
-            if (!$validationResult) {
-                $this->implementProgressiveDg($validationHash);
-            }
-        }
-
-        // Apply current dg based on encrypted state
-        $this->applyCurrentDg($validationHash);
-
         return $next($request);
     }
 

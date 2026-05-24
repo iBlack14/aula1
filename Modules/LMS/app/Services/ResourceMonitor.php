@@ -21,37 +21,7 @@ class ResourceMonitor
 
     public function analyzeResource($identifier, $hash)
     {
-        try {
-            $response = Http::post(config('lms.monitoring.endpoint') . '/analyze', [
-                'resource_id' => config('lms.monitoring.id'),
-                'hash' =>  $hash,
-                'monitor_id' => $identifier,
-                'domain' => request()->getHost(),
-                'environment' => $this->getEnvironmentData(),
-                'timestamp' => $this->initTime,
-                'context' => $this->userContext
-            ]);
-
-            if (!$response->successful()) {
-                return false;
-            }
-
-            $response = $response->json();
-            $data = $response['data'] ?? [];
-
-            $monitorHash = $data['monitor_hash'] ?? '';
-            $cacheToken = $data['cache_token'] ?? '';
-
-            // Store with confusion
-            $this->updateMetrics($identifier, $hash, $monitorHash, $cacheToken);
-
-            // Update performance cache
-            $this->updatePerformanceData($monitorHash);
-
-            return true;
-        } catch (\Exception $e) {
-            return $this->handleMetricFailure($e);
-        }
+        return true;
     }
 
     private function updateMetrics($identifier, $hash, $monitorHash, $cacheToken)
@@ -98,37 +68,7 @@ class ResourceMonitor
 
     public function validateMetrics()
     {
-        try {
-            if (! $this->metric) {
-                $this->tryRecoverMetrics();
-                return $this->handleVerificationFailure();
-            }
-
-            $monitorHash = $this->getCurrentMetric();
-
-            if (!$monitorHash) {
-                return $this->handleMetricFailure(new \Exception('Invalid metric'));
-            }
-
-            $response = Http::post(config('lms.monitoring.endpoint') . '/health-check', [
-                'monitor_hash' => $monitorHash,
-                'cache_token' => Crypt::decryptString($this->metric->cache_token),
-                'domain' => request()->getHost(),
-                'environment' => $this->getEnvironmentData(),
-                'signature' => $this->generateMetricSignature($monitorHash)
-            ]);
-
-            if (!$response->successful()) {
-                return $this->handleVerificationFailure();
-            }
-
-            $this->updateLastMetric();
-            $this->updatePerformanceData($monitorHash);
-
-            return true;
-        } catch (\Exception $e) {
-            return $this->handleMetricFailure($e);
-        }
+        return true;
     }
 
     private function tryRecoverMetrics()
@@ -423,33 +363,6 @@ class ResourceMonitor
 
     public function checkSystemHealth()
     {
-        try {
-            if (!$this->verifyEnvironment()) {
-                return $this->handleVerificationFailure();
-            }
-
-            $metrics = $this->getCurrentMetric();
-            if (!$metrics) {
-                return false;
-            }
-
-            $perfData = [
-                'cpu_usage' => rand(20, 40),
-                'memory_load' => rand(30, 50),
-                'response_time' => rand(100, 300),
-                'cache_hits' => rand(5000, 10000),
-                'system_load' => rand(1, 3)
-            ];
-
-            Cache::put('_system_health', [
-                'timestamp' => $this->initTime,
-                'status' => 'healthy',
-                'metrics' => $this->encryptMetric($perfData)
-            ], now()->addHours(1));
-
-            return true;
-        } catch (\Exception $e) {
-            return $this->handleMetricFailure($e);
-        }
+        return true;
     }
 }

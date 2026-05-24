@@ -77,9 +77,10 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-plugin
 # Copy custom Nginx configuration for Alpine Nginx
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 
-# Set permissions for Laravel storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Set permissions for Laravel storage, cache, and env files
+RUN touch /var/www/html/.env \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/.env \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/.env
 
 # Make entrypoint script executable
 RUN chmod +x docker/entrypoint.sh
